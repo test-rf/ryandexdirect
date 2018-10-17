@@ -1,33 +1,33 @@
 yadirAuth <- function(Login = NULL, NewUser = FALSE, TokenPath = getwd()) {
   
-  # ïðîâåðÿåì õðàíèëèùå
+  # Ã¯Ã°Ã®Ã¢Ã¥Ã°Ã¿Ã¥Ã¬ ÃµÃ°Ã Ã­Ã¨Ã«Ã¨Ã¹Ã¥
   
   if (!dir.exists(TokenPath)) {
     dir.create(TokenPath)
   }
     
-  # äëÿ ñîõðàíåíèÿ òîêíà
+  # Ã¤Ã«Ã¿ Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã¨Ã¿ Ã²Ã®ÃªÃ­Ã 
   
   if (NewUser == FALSE && file.exists(paste0(paste0(TokenPath, "/", Login, ".yadirAuth.RData")))) {
     message("Load token from ", paste0(paste0(TokenPath, "/", Login, ".yadirAuth.RData")))
     load(paste0(TokenPath, "/", Login, ".yadirAuth.RData"))
-    # ïðîâåðÿåì êîãäà èñòåêàåò òîêåí  
+    # Ã¯Ã°Ã®Ã¢Ã¥Ã°Ã¿Ã¥Ã¬ ÃªÃ®Ã£Ã¤Ã  Ã¨Ã±Ã²Ã¥ÃªÃ Ã¥Ã² Ã²Ã®ÃªÃ¥Ã­  
     if (as.numeric(token$expire_at - Sys.time(), units = "days") < 30) {
       message("Auto refresh token")
       token_raw  <- httr::POST("https://oauth.yandex.ru/token", body = list(grant_type="refresh_token", 
                                                                             refresh_token = token$refresh_token,
-                                                                            client_id = "365a2d0a675c462d90ac145d4f5948cc",
-                                                                            client_secret = "f2074f4c312449fab9681942edaa5360"), encode = "form")
-      # ïðîâåðÿå íà îøèáêè
+                                                                            client_id = "dd90e90c94504d23a9ed396473a538a9",
+                                                                            client_secret = "0c9f4aba10374fcbabfb2b7969990525"), encode = "form")
+      # Ã¯Ã°Ã®Ã¢Ã¥Ã°Ã¿Ã¥ Ã­Ã  Ã®Ã¸Ã¨Ã¡ÃªÃ¨
       if (!is.null(token$error_description)) {
         stop(paste0(token$error, ": ", token$error_description))
       }
-      # ïàðñèì òîêåí
+      # Ã¯Ã Ã°Ã±Ã¨Ã¬ Ã²Ã®ÃªÃ¥Ã­
       new_token <- content(token_raw)
-      # äîáàâëÿåì èíôîðìàöèþ î òîì êîãäà îí èñòåêàåò
+      # Ã¤Ã®Ã¡Ã Ã¢Ã«Ã¿Ã¥Ã¬ Ã¨Ã­Ã´Ã®Ã°Ã¬Ã Ã¶Ã¨Ã¾ Ã® Ã²Ã®Ã¬ ÃªÃ®Ã£Ã¤Ã  Ã®Ã­ Ã¨Ã±Ã²Ã¥ÃªÃ Ã¥Ã²
       new_token$expire_at <- Sys.time() + as.numeric(token$expires_in, units = "secs")
       
-      # ñîõðàíÿåì òîêåí â ôàéë
+      # Ã±Ã®ÃµÃ°Ã Ã­Ã¿Ã¥Ã¬ Ã²Ã®ÃªÃ¥Ã­ Ã¢ Ã´Ã Ã©Ã«
       save(new_token, file = paste0(TokenPath, "/", Login, ".yadirAuth.RData"))
       message("Token saved in file ", paste0(TokenPath, "/", Login, ".yadirAuth.RData"))
       
@@ -38,29 +38,29 @@ yadirAuth <- function(Login = NULL, NewUser = FALSE, TokenPath = getwd()) {
       return(token)
   }
 }
-  # åñëè òîêåí íå íàéäåí â ôàéëå òî ïîëó÷àåì êîä è ïðîõîäèì âñþ ïðîöåäóðó
-  browseURL(paste0("https://oauth.yandex.ru/authorize?response_type=code&client_id=365a2d0a675c462d90ac145d4f5948cc&redirect_uri=https://selesnow.github.io/ryandexdirect/getToken/get_code.html&force_confirm=", as.integer(NewUser), ifelse(is.null(Login), "", paste0("&login_hint=", Login))))
-  # çàïðàøèâàåì êîä
+  # Ã¥Ã±Ã«Ã¨ Ã²Ã®ÃªÃ¥Ã­ Ã­Ã¥ Ã­Ã Ã©Ã¤Ã¥Ã­ Ã¢ Ã´Ã Ã©Ã«Ã¥ Ã²Ã® Ã¯Ã®Ã«Ã³Ã·Ã Ã¥Ã¬ ÃªÃ®Ã¤ Ã¨ Ã¯Ã°Ã®ÃµÃ®Ã¤Ã¨Ã¬ Ã¢Ã±Ã¾ Ã¯Ã°Ã®Ã¶Ã¥Ã¤Ã³Ã°Ã³
+  browseURL(paste0("https://oauth.yandex.ru/authorize?response_type=code&client_id=dd90e90c94504d23a9ed396473a538a9&force_confirm=", as.integer(NewUser), ifelse(is.null(Login), "", paste0("&login_hint=", Login))))
+  # Ã§Ã Ã¯Ã°Ã Ã¸Ã¨Ã¢Ã Ã¥Ã¬ ÃªÃ®Ã¤
   temp_code <- readline(prompt = "Enter authorize code:")
   
-  # ïðîâåðêà ââåä¸ííîãî êîäà
+  # Ã¯Ã°Ã®Ã¢Ã¥Ã°ÃªÃ  Ã¢Ã¢Ã¥Ã¤Â¸Ã­Ã­Ã®Ã£Ã® ÃªÃ®Ã¤Ã 
   while(nchar(temp_code) != 7) {
-    message("Ïðîâåðî÷íûé êîä ââåä¸ííûé âàìè íå ÿâëÿåòñÿ 7-çíà÷íûì, ïîâòîðèòå ïîïûòêó ââîäà êîäà.")
+    message("ÃÃ°Ã®Ã¢Ã¥Ã°Ã®Ã·Ã­Ã»Ã© ÃªÃ®Ã¤ Ã¢Ã¢Ã¥Ã¤Â¸Ã­Ã­Ã»Ã© Ã¢Ã Ã¬Ã¨ Ã­Ã¥ Ã¿Ã¢Ã«Ã¿Ã¥Ã²Ã±Ã¿ 7-Ã§Ã­Ã Ã·Ã­Ã»Ã¬, Ã¯Ã®Ã¢Ã²Ã®Ã°Ã¨Ã²Ã¥ Ã¯Ã®Ã¯Ã»Ã²ÃªÃ³ Ã¢Ã¢Ã®Ã¤Ã  ÃªÃ®Ã¤Ã .")
     temp_code <- readline(prompt = "Enter authorize code:")
   }
   
   token_raw <- httr::POST("https://oauth.yandex.ru/token", body = list(grant_type="authorization_code", 
                                                                        code = temp_code, 
-                                                                       client_id = "365a2d0a675c462d90ac145d4f5948cc", 
-                                                                       client_secret = "f2074f4c312449fab9681942edaa5360"), encode = "form")
-  # ïàðñèì òîêåí
+                                                                       client_id = "dd90e90c94504d23a9ed396473a538a9", 
+                                                                       client_secret = "0c9f4aba10374fcbabfb2b7969990525"), encode = "form")
+  # Ã¯Ã Ã°Ã±Ã¨Ã¬ Ã²Ã®ÃªÃ¥Ã­
   token <- content(token_raw)
   token$expire_at <- Sys.time() + as.numeric(token$expires_in, units = "secs")
-  # ïðîâåðÿå íà îøèáêè
+  # Ã¯Ã°Ã®Ã¢Ã¥Ã°Ã¿Ã¥ Ã­Ã  Ã®Ã¸Ã¨Ã¡ÃªÃ¨
   if (!is.null(token$error_description)) {
     stop(paste0(token$error, ": ", token$error_description))
   }
-  # ñîõðàíÿåì òîêåí â ôàéë
+  # Ã±Ã®ÃµÃ°Ã Ã­Ã¿Ã¥Ã¬ Ã²Ã®ÃªÃ¥Ã­ Ã¢ Ã´Ã Ã©Ã«
   save(token, file = paste0(TokenPath, "/", Login, ".yadirAuth.RData"))
   message("Token saved in file ", paste0(TokenPath, "/", Login, ".yadirAuth.RData"))
   
