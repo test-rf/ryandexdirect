@@ -7,57 +7,57 @@ yadirGetAds <- function(CampaignIds   = NULL,
                         AgencyAccount = NULL,
                         TokenPath     = getwd()){
   
-  #Авторизация
+  #ГЂГўГІГ®Г°ГЁГ§Г Г¶ГЁГї
   Token <- tech_auth(login = Login, token = Token, AgencyAccount = AgencyAccount, TokenPath = TokenPath)
 
-  #Проверяем если не задан список рекламных кампаний загружаем его и получаем все группы
+  #ГЏГ°Г®ГўГҐГ°ГїГҐГ¬ ГҐГ±Г«ГЁ Г­ГҐ Г§Г Г¤Г Г­ Г±ГЇГЁГ±Г®ГЄ Г°ГҐГЄГ«Г Г¬Г­Г»Гµ ГЄГ Г¬ГЇГ Г­ГЁГ© Г§Г ГЈГ°ГіГ¦Г ГҐГ¬ ГҐГЈГ® ГЁ ГЇГ®Г«ГіГ·Г ГҐГ¬ ГўГ±ГҐ ГЈГ°ГіГЇГЇГ»
   if (is.null(CampaignIds)) {
     CampaignIds <-  yadirGetCampaignList(Login         = Login,
                                          AgencyAccount = AgencyAccount,
                                          Token         = Token,
                                          TokenPath     = TokenPath)$Id
   }
-#Фиксируем время начала работы
+#Г”ГЁГЄГ±ГЁГ°ГіГҐГ¬ ГўГ°ГҐГ¬Гї Г­Г Г·Г Г«Г  Г°Г ГЎГ®ГІГ»
 start_time  <- Sys.time()
 
-#Результирующий дата фрейм
+#ГђГҐГ§ГіГ«ГјГІГЁГ°ГіГѕГ№ГЁГ© Г¤Г ГІГ  ГґГ°ГҐГ©Г¬
 result      <- data.frame(Id                  = integer(0), 
-                          AdGroupId           = integer(0),
-                          CampaignId          = integer(0),
-                          Type                = character(0),
-                          Subtype             = character(0),
-                          Status              = character(0),
-                          AgeLabel            = character(0),
-                          State               = character(0),
-                          TextAdTitle         = character(0),
-                          TextAdTitle2        = character(0),
-                          TextAdText          = character(0),
-                          TextAdHref          = character(0),
-                          TextAdDisplayDomain = character(0),
-                          TextAdMobile        = character(0),
-                          TextImageAdHref     = character(0))
+                         # AdGroupId           = integer(0),
+                         # CampaignId          = integer(0),
+                         # Type                = character(0),
+                         # Subtype             = character(0),
+                         # Status              = character(0),
+                        #  AgeLabel            = character(0),
+                        #  State               = character(0),
+                        #  TextAdTitle         = character(0),
+                         # TextAdTitle2        = character(0),
+                        #  TextAdText          = character(0),
+                          TextAdHref          = character(0)
+                        #  TextAdDisplayDomain = character(0),
+                        #  TextAdMobile        = character(0),
+                        #  TextImageAdHref     = character(0))
 
-#Переводим фильтр по статусу в json
+#ГЏГҐГ°ГҐГўГ®Г¤ГЁГ¬ ГґГЁГ«ГјГІГ° ГЇГ® Г±ГІГ ГІГіГ±Гі Гў json
 States          <- paste("\"",States,"\"",collapse=", ",sep="")
 
-#Определяем количество кампаний которое требуется обработать
+#ГЋГЇГ°ГҐГ¤ГҐГ«ГїГҐГ¬ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЄГ Г¬ГЇГ Г­ГЁГ© ГЄГ®ГІГ®Г°Г®ГҐ ГІГ°ГҐГЎГіГҐГІГ±Гї Г®ГЎГ°Г ГЎГ®ГІГ ГІГј
 camp_num     <- as.integer(length(CampaignIds))
 camp_start   <- 1
 camp_step    <- 10
 
 packageStartupMessage("Processing", appendLF = F)
-#Запускаем цикл обработки кампаний
+#Г‡Г ГЇГіГ±ГЄГ ГҐГ¬ Г¶ГЁГЄГ« Г®ГЎГ°Г ГЎГ®ГІГЄГЁ ГЄГ Г¬ГЇГ Г­ГЁГ©
 while(camp_start <= camp_num){
 
-#определяем какое к-во РК надо обработать
+#Г®ГЇГ°ГҐГ¤ГҐГ«ГїГҐГ¬ ГЄГ ГЄГ®ГҐ ГЄ-ГўГ® ГђГЉ Г­Г Г¤Г® Г®ГЎГ°Г ГЎГ®ГІГ ГІГј
 camp_step   <-  if(camp_num - camp_start >= 10) camp_step else camp_num - camp_start + 1
 
-#Преобразуем список рекламных кампаний
+#ГЏГ°ГҐГ®ГЎГ°Г Г§ГіГҐГ¬ Г±ГЇГЁГ±Г®ГЄ Г°ГҐГЄГ«Г Г¬Г­Г»Гµ ГЄГ Г¬ГЇГ Г­ГЁГ©
 Ids             <- ifelse(is.na(Ids), NA,paste0(Ids, collapse = ","))
 AdGroupIds      <- ifelse(is.na(AdGroupIds),NA,paste0(AdGroupIds, collapse = ","))
 CampaignIdsTmp  <- paste("\"",CampaignIds[camp_start:(camp_start + camp_step - 1)],"\"",collapse=", ",sep="")
 
-#Задаём начальный offset
+#Г‡Г Г¤Г ВёГ¬ Г­Г Г·Г Г«ГјГ­Г»Г© offset
 lim <- 0
 
 while(lim != "stoped"){
@@ -73,23 +73,13 @@ while(lim != "stoped"){
 },
                       
                       \"FieldNames\": [
-                      \"Id\",
-                      \"CampaignId\",
-                      \"AdGroupId\",
-                      \"Status\",
-                      \"State\",
-                      \"AgeLabel\",
-                      \"Type\",
-                      \"Subtype\"],
+                      \"Id\"
+                     ],
                       \"TextAdFieldNames\": [
-                      \"Title\",
-                      \"Title2\",
-                      \"Text\",
-                      \"Href\",
-                      \"Mobile\",
-                      \"DisplayDomain\"],
-                      \"TextImageAdFieldNames\": [
-                      \"Href\"],
+                      
+                      \"Href\"
+                     ],
+                      
                       \"Page\": {  
                       \"Limit\": 10000,
                       \"Offset\": ",lim,"}
@@ -100,46 +90,46 @@ while(lim != "stoped"){
   stop_for_status(answer)
   dataRaw <- content(answer, "parsed", "application/json")
   
-  #Проверка не вернул ли запрос ошибку
+  #ГЏГ°Г®ГўГҐГ°ГЄГ  Г­ГҐ ГўГҐГ°Г­ГіГ« Г«ГЁ Г§Г ГЇГ°Г®Г± Г®ГёГЁГЎГЄГі
   if(length(dataRaw$error) > 0){
     stop(paste0(dataRaw$error$error_string, " - ", dataRaw$error$error_detail))
   }
   
-#Парсер ответа
+#ГЏГ Г°Г±ГҐГ° Г®ГІГўГҐГІГ 
   for(ads_i in 1:length(dataRaw$result$Ads)){
       result      <- rbind(result,
                            data.frame(Id                  = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Id), NA,dataRaw$result$Ads[[ads_i]]$Id), 
-                                      AdGroupId           = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AdGroupId), NA,dataRaw$result$Ads[[ads_i]]$AdGroupId),
-                                      CampaignId          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$CampaignId), NA,dataRaw$result$Ads[[ads_i]]$CampaignId),
-                                      Type                = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Type), NA,dataRaw$result$Ads[[ads_i]]$Type),
-                                      Subtype             = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Subtype), NA,dataRaw$result$Ads[[ads_i]]$Subtype),
-                                      Status              = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Status), NA,dataRaw$result$Ads[[ads_i]]$Status),
-                                      AgeLabel            = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AgeLabel), NA,dataRaw$result$Ads[[ads_i]]$AgeLabel),
-                                      State               = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$State), NA,dataRaw$result$Ads[[ads_i]]$State),
-                                      TextAdTitle         = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title),
-                                      TextAdTitle2        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title2), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title2),
-                                      TextAdText          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Text), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Text),
-                                      TextAdHref          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Href),
-                                      TextAdDisplayDomain = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain), NA,dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain),
-                                      TextAdMobile        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Mobile), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Mobile),
-                                      TextImageAdHref     = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextImageAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextImageAd$Href)))
+                                    #  AdGroupId           = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AdGroupId), NA,dataRaw$result$Ads[[ads_i]]$AdGroupId),
+                                    #  CampaignId          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$CampaignId), NA,dataRaw$result$Ads[[ads_i]]$CampaignId),
+                                    #  Type                = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Type), NA,dataRaw$result$Ads[[ads_i]]$Type),
+                                    #  Subtype             = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Subtype), NA,dataRaw$result$Ads[[ads_i]]$Subtype),
+                                     # Status              = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Status), NA,dataRaw$result$Ads[[ads_i]]$Status),
+                                    #  AgeLabel            = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AgeLabel), NA,dataRaw$result$Ads[[ads_i]]$AgeLabel),
+                                    #  State               = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$State), NA,dataRaw$result$Ads[[ads_i]]$State),
+                                    #  TextAdTitle         = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title),
+                                    #  TextAdTitle2        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title2), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title2),
+                                     # TextAdText          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Text), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Text),
+                                    TextAdHref          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Href)
+                                    #  TextAdDisplayDomain = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain), NA,dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain),
+                                     # TextAdMobile        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Mobile), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Mobile),
+                                     # TextImageAdHref     = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextImageAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextImageAd$Href)))
 }
-#Добавляем точку, что процесс загрузки идёт
+#Г„Г®ГЎГ ГўГ«ГїГҐГ¬ ГІГ®Г·ГЄГі, Г·ГІГ® ГЇГ°Г®Г¶ГҐГ±Г± Г§Г ГЈГ°ГіГ§ГЄГЁ ГЁГ¤ВёГІ
   packageStartupMessage(".", appendLF = F)
-#Проверяем остались ли ещё строки которые надо забрать
+#ГЏГ°Г®ГўГҐГ°ГїГҐГ¬ Г®Г±ГІГ Г«ГЁГ±Гј Г«ГЁ ГҐГ№Вё Г±ГІГ°Г®ГЄГЁ ГЄГ®ГІГ®Г°Г»ГҐ Г­Г Г¤Г® Г§Г ГЎГ°Г ГІГј
  lim <- ifelse(is.null(dataRaw$result$LimitedBy), "stoped",dataRaw$result$LimitedBy + 1)
 }
 
-#Определяем следующий пул кампаний
+#ГЋГЇГ°ГҐГ¤ГҐГ«ГїГҐГ¬ Г±Г«ГҐГ¤ГіГѕГ№ГЁГ© ГЇГіГ« ГЄГ Г¬ГЇГ Г­ГЁГ©
 camp_start <- camp_start + camp_step
 }
 
-#Фиксируем время завершения обработки
+#Г”ГЁГЄГ±ГЁГ°ГіГҐГ¬ ГўГ°ГҐГ¬Гї Г§Г ГўГҐГ°ГёГҐГ­ГЁГї Г®ГЎГ°Г ГЎГ®ГІГЄГЁ
 stop_time <- Sys.time()
 
-#Сообщение о том, что загрузка данных прошла успешно
+#Г‘Г®Г®ГЎГ№ГҐГ­ГЁГҐ Г® ГІГ®Г¬, Г·ГІГ® Г§Г ГЈГ°ГіГ§ГЄГ  Г¤Г Г­Г­Г»Гµ ГЇГ°Г®ГёГ«Г  ГіГ±ГЇГҐГёГ­Г®
 packageStartupMessage("Done", appendLF = T)
-packageStartupMessage(paste0("Количество полученных объявлений: ", nrow(result)), appendLF = T)
-packageStartupMessage(paste0("Длительность работы: ", round(difftime(stop_time, start_time , units ="secs"),0), " сек."), appendLF = T)
-#Возвращаем результат
+packageStartupMessage(paste0("ГЉГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ®Г«ГіГ·ГҐГ­Г­Г»Гµ Г®ГЎГєГїГўГ«ГҐГ­ГЁГ©: ", nrow(result)), appendLF = T)
+packageStartupMessage(paste0("Г„Г«ГЁГІГҐГ«ГјГ­Г®Г±ГІГј Г°Г ГЎГ®ГІГ»: ", round(difftime(stop_time, start_time , units ="secs"),0), " Г±ГҐГЄ."), appendLF = T)
+#Г‚Г®Г§ГўГ°Г Г№Г ГҐГ¬ Г°ГҐГ§ГіГ«ГјГІГ ГІ
 return(result)}
