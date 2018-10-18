@@ -22,20 +22,20 @@ start_time  <- Sys.time()
 
 #Результирующий дата фрейм
 result      <- data.frame(Id                  = integer(0), 
-                          AdGroupId           = integer(0),
-                          CampaignId          = integer(0),
-                          Type                = character(0),
-                          Subtype             = character(0),
-                          Status              = character(0),
-                          AgeLabel            = character(0),
-                          State               = character(0),
-                          TextAdTitle         = character(0),
-                          TextAdTitle2        = character(0),
-                          TextAdText          = character(0),
-                          TextAdHref          = character(0),
-                          TextAdDisplayDomain = character(0),
-                          TextAdMobile        = character(0),
-                          TextImageAdHref     = character(0))
+                          #AdGroupId           = integer(0),
+                          #CampaignId          = integer(0),
+                          #Type                = character(0),
+                          #Subtype             = character(0),
+                          #Status              = character(0),
+                          #AgeLabel            = character(0),
+                          #State               = character(0),
+                          #TextAdTitle         = character(0),
+                          #TextAdTitle2        = character(0),
+                          #TextAdText          = character(0),
+                          TextAdHref          = character(0)
+                          #TextAdDisplayDomain = character(0),
+                          #TextAdMobile        = character(0),
+                          #TextImageAdHref     = character(0))
 
 #Переводим фильтр по статусу в json
 States          <- paste("\"",States,"\"",collapse=", ",sep="")
@@ -73,23 +73,13 @@ while(lim != "stoped"){
 },
                       
                       \"FieldNames\": [
-                      \"Id\",
-                      \"CampaignId\",
-                      \"AdGroupId\",
-                      \"Status\",
-                      \"State\",
-                      \"AgeLabel\",
-                      \"Type\",
-                      \"Subtype\"],
+                      \"Id\"
+                    ],
                       \"TextAdFieldNames\": [
-                      \"Title\",
-                      \"Title2\",
-                      \"Text\",
-                      \"Href\",
-                      \"Mobile\",
-                      \"DisplayDomain\"],
-                      \"TextImageAdFieldNames\": [
-                      \"Href\"],
+                      
+                      \"Href\"
+                     ],
+                     
                       \"Page\": {  
                       \"Limit\": 10000,
                       \"Offset\": ",lim,"}
@@ -109,20 +99,20 @@ while(lim != "stoped"){
   for(ads_i in 1:length(dataRaw$result$Ads)){
       result      <- rbind(result,
                            data.frame(Id                  = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Id), NA,dataRaw$result$Ads[[ads_i]]$Id), 
-                                      AdGroupId           = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AdGroupId), NA,dataRaw$result$Ads[[ads_i]]$AdGroupId),
-                                      CampaignId          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$CampaignId), NA,dataRaw$result$Ads[[ads_i]]$CampaignId),
-                                      Type                = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Type), NA,dataRaw$result$Ads[[ads_i]]$Type),
-                                      Subtype             = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Subtype), NA,dataRaw$result$Ads[[ads_i]]$Subtype),
-                                      Status              = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Status), NA,dataRaw$result$Ads[[ads_i]]$Status),
-                                      AgeLabel            = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AgeLabel), NA,dataRaw$result$Ads[[ads_i]]$AgeLabel),
-                                      State               = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$State), NA,dataRaw$result$Ads[[ads_i]]$State),
-                                      TextAdTitle         = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title),
-                                      TextAdTitle2        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title2), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title2),
-                                      TextAdText          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Text), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Text),
-                                      TextAdHref          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Href),
-                                      TextAdDisplayDomain = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain), NA,dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain),
-                                      TextAdMobile        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Mobile), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Mobile),
-                                      TextImageAdHref     = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextImageAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextImageAd$Href)))
+                                     # AdGroupId           = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AdGroupId), NA,dataRaw$result$Ads[[ads_i]]$AdGroupId),
+                                      #CampaignId          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$CampaignId), NA,dataRaw$result$Ads[[ads_i]]$CampaignId),
+                                      #Type                = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Type), NA,dataRaw$result$Ads[[ads_i]]$Type),
+                                      #Subtype             = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Subtype), NA,dataRaw$result$Ads[[ads_i]]$Subtype),
+                                      #Status              = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$Status), NA,dataRaw$result$Ads[[ads_i]]$Status),
+                                      #AgeLabel            = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$AgeLabel), NA,dataRaw$result$Ads[[ads_i]]$AgeLabel),
+                                      #State               = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$State), NA,dataRaw$result$Ads[[ads_i]]$State),
+                                      #TextAdTitle         = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title),
+                                      #TextAdTitle2        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Title2), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Title2),
+                                      #TextAdText          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Text), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Text),
+                                      TextAdHref          = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Href)
+                                      #TextAdDisplayDomain = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain), NA,dataRaw$result$Ads[[ads_i]]$TextAd$DisplayDomain),
+                                      #TextAdMobile        = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextAd$Mobile), NA,dataRaw$result$Ads[[ads_i]]$TextAd$Mobile),
+                                      #TextImageAdHref     = ifelse(is.null(dataRaw$result$Ads[[ads_i]]$TextImageAd$Href), NA,dataRaw$result$Ads[[ads_i]]$TextImageAd$Href)))
 }
 #Добавляем точку, что процесс загрузки идёт
   packageStartupMessage(".", appendLF = F)
